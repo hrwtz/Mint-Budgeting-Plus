@@ -118,19 +118,8 @@ angular.module('myApp.budgetMain', []).
                         remainingAmount: spending.budgeted_amount - totalAmount,
                         monthPercentage: date.getDate() / daysInMonthDate,
                     }
-                    // var same_budget = false;
-                    // for (var j = 0; j < parents[parentID].budgets.length; j++) {
-                    //     if (budget.id === parents[parentID].budgets[j].id){
-                    //         same_budget = parents[parentID].budgets[j];
-                    //         break;
-                    //     }
-                    // }
-                    // console.log(budget.id)
-                    // if (same_budget){
 
-                    // }else{
-                        parents[parentID].budgets.push(budget);
-                    // }
+                    parents[parentID].budgets.push(budget);
                 };
 
 
@@ -158,14 +147,22 @@ angular.module('myApp.budgetMain', []).
                     if (realBudget[currentBudget.category_id]){
                         var spentAmount = realBudget[currentBudget.category_id].spentAmount + currentBudget.spentAmount,
                             remainingAmount = realBudget[currentBudget.category_id].remainingAmount + currentBudget.remainingAmount,
-                            budgetedAmount = realBudget[currentBudget.category_id].budgetedAmount + currentBudget.budgetedAmount;
+                            budgetedAmount = realBudget[currentBudget.category_id].budgetedAmount + currentBudget.budgetedAmount,
+                            title = getCategoryValue(currentBudget.category_id, 'name'),
+                            spentPercentage = spentAmount / budgetedAmount;
+                        if (!title) title = '';
+                        if (spentPercentage > 1)spentPercentage = 1;
+
                         realBudget[currentBudget.category_id] = {
-                            budgetedAmount: budgetedAmount,
                             category_id: currentBudget.category_id,
-                            remainingAmount: remainingAmount,
+                            title: title,
+                            budgetedAmount: budgetedAmount,
                             spentAmount: spentAmount,
+                            extendedAmount: realBudget[currentBudget.category_id].extendedAmount + currentBudget.extendedAmount,
+                            rolloverAmount: realBudget[currentBudget.category_id].rolloverAmount + currentBudget.rolloverAmount,
+                            spentPercentage: spentPercentage,
                             spentColor: shadeColor(getColor(spentAmount / budgetedAmount), -.2),
-                            spentPercentage: spentAmount / budgetedAmount
+                            remainingAmount: remainingAmount,
                         }
                     }else{
                         realBudget[currentBudget.category_id] = currentBudget;

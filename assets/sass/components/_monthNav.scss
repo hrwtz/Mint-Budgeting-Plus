@@ -31,10 +31,10 @@
 
 	.is-selected &{
 		background-color: green;
+	}
 
-		&.is-over{
-			background-color: red;
-		}
+	.is-selected.is-over &{
+		background-color: red;
 	}
 }
 
