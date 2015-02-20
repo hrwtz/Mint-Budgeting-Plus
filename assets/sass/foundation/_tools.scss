@@ -1,0 +1,217 @@
+// *************************************
+//
+//   Tools
+//   -> Global utilities
+//
+// *************************************
+
+// -------------------------------------
+//   Background
+// -------------------------------------
+
+.bch {
+  background: $c-highlight;
+}
+
+.bci {
+  background: $c-background-invert;
+}
+
+.bcs {
+  background: $c-subdue;
+}
+
+// -------------------------------------
+//   Display
+// -------------------------------------
+
+.db {
+  display: block;
+}
+
+.di {
+  display: inline;
+}
+
+.dib {
+  display: inline-block;
+}
+
+.dn {
+  display: none;
+}
+
+// -------------------------------------
+//   Margins
+// -------------------------------------
+
+// ----- All ----- //
+
+
+// ----- Bottom ----- //
+
+.mbf {
+  margin-bottom: 0;
+}
+
+// ----- Horizontal ----- //
+
+.mhc {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// ----- Left ----- //
+
+.mlf {
+  margin-left: 0;
+}
+
+// ----- Right ----- //
+
+.mrf {
+  margin-right: 0;
+}
+
+// ----- Top ----- //
+.mtf{
+  margin-top: 0;
+}
+
+// -------------------------------------
+//   Padding
+// -------------------------------------
+
+// ----- All ----- //
+
+
+// ----- Bottom ----- //
+
+.pbf {
+  padding-bottom: 0;
+}
+
+// ----- Left ----- //
+
+.plf {
+  padding-left: 0;
+}
+
+// ----- Right ----- //
+
+.prf {
+  padding-right: 0;
+}
+
+// ----- Top ----- //
+
+.ptf {
+  padding-top: 0;
+}
+
+// -------------------------------------
+//   Positioning
+// -------------------------------------
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.poa {
+  position: absolute;
+}
+
+.pof {
+  position: fixed;
+}
+
+.por {
+  position: relative;
+}
+
+.pos {
+  position: static;
+}
+
+// -------------------------------------
+//   Rounding
+// -------------------------------------
+
+.ra {
+  border-radius: 50%;
+}
+
+.ram {
+  border-radius: $b-borderRadius;
+}
+
+.ran {
+  border-radius: 0;
+}
+
+// -------------------------------------
+//   Text
+// -------------------------------------
+
+// ----- Alignment ----- //
+
+.tac {
+  text-align: center;
+}
+
+// ----- Color ----- //
+
+.tch {
+  color: $c-highlight;
+}
+
+.tci {
+  color: $c-text-invert;
+}
+
+.tcs {
+  color: $c-subdue;
+}
+
+.tct {
+  color: $c-text;
+}
+
+// ----- Family ----- //
+
+.tfb {
+  font-family: $b-fontFamily;
+}
+
+.tfh {
+  font-family: $b-fontFamily-heading;
+}
+
+// ----- Size ----- //
+
+
+// ----- Style ----- //
+
+.tsi {
+  font-style: italic;
+}
+
+// ----- Transform ----- //
+
+.ttu {
+  text-transform: uppercase;
+}
+
+// ----- Weight ----- //
+
+.twn {
+  font-weight: normal;
+}
+
+.twb {
+  font-weight: bold;
+}

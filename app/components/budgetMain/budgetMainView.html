@@ -1,0 +1,39 @@
+<div class="row">
+	<div class="cell well">
+		<div class="g">
+			<div class="g-b">
+				
+			
+				<ul class="monthNav">
+					<li class="dib" ng-repeat="month in budgetedMonths">
+						<monthnavitem class="monthNav-item" data="month" click="selectMonths(months)" selected="selected"></monthnavitem>
+					</li>
+				</ul>
+
+				<div ng-repeat="parents in parentBudgets">
+					<p class="budgetGroup">{{parents.category_name}}</p>
+					<ul>
+						<li ng-repeat="budget in parents.budgets">
+							<div class="budgetLine">
+								<div class="budgetLine-info clearfix">
+									<div class="budgetLine-title">{{budget.title}}</div>
+									<div class="budgetLine-remaining">{{budget.remainingAmount | positive | currency : '$'}} {{budget.remainingAmount < 0 ? 'Over' : 'Left'}}</div>
+								</div>
+								<div class="budgetLine-bar">
+									<div class="budgetLine-bar-spent" style="width: {{budget.spentPercentage * 100}}%; background-color: {{budget.spentColor}};"></div>
+									<div class="budgetLine-bar-dayLine" style="left:{{budget.monthPercentage * 100}}%;" ng-show="isCurrentMonth"></div>
+									<div class="budgetLine-bar-progress">
+										${{budget.spentAmount}} of ${{budget.budgetedAmount}}
+										<span ng-show="budget.rolloverAmount">{{budget.rolloverAmount >= 0 ? '+' : '-'}} {{budget.rolloverAmount | positive | currency : '$'}} Rollover</span>
+										<span ng-show="budget.extendedAmount">{{budget.extendedAmount >= 0 ? '+' : '-'}} {{budget.extendedAmount | positive | currency : '$'}} Extended Transactions</span>
+									</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>

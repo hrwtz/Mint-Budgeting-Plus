@@ -1,0 +1,60 @@
+// *************************************
+//
+//   Budget Line
+//   -> One Line graph containing information about one category
+//
+// *************************************
+
+.budgetLine{
+	margin-bottom: 15px;
+}
+
+// -------------------------------------
+//   Structure
+// -------------------------------------
+
+.budgetLine-info{
+	margin-bottom: 5px;
+}
+
+.budgetLine-title{
+	float: left;
+}
+
+.budgetLine-remaining{
+	float: right;
+}
+
+.budgetLine-bar{
+	position: relative;
+	display: block;
+	padding: 5px 10px;
+	background: #eee;
+	border-radius: 2px;
+}
+
+.budgetLine-bar-spent {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	z-index: 1;
+	border-radius: 2px;
+}
+
+.budgetLine-bar-dayLine {
+	position: absolute;
+	top: 0;
+	width: 1px;
+	bottom: 0;
+	background: black;
+}
+
+.budgetLine-bar-progress{
+	position: relative;
+}
+
+.budgetLine-bar-dayLine,
+.budgetLine-bar-progress {
+	z-index: 5;
+}

@@ -1,0 +1,27 @@
+// *************************************
+//
+//   Row
+//   -> Width-spanning blocks
+//
+// *************************************
+
+.row {
+	position: relative;
+  	padding: 0 $b-space;
+  	z-index: 10;
+  	@extend .clearfix;
+}
+
+// -------------------------------------
+//   Modifiers
+// -------------------------------------
+
+// ----- Theme ----- //
+
+.row--a {
+  background: $c-highlight;
+}
+
+.row--b {
+  background: $c-subdue;
+}

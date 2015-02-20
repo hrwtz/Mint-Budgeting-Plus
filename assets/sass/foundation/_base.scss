@@ -1,0 +1,271 @@
+// *************************************
+//
+//   Base
+//   -> Tag-level settings
+//
+// *************************************
+
+html {
+    height: 100%;
+    background: $c-background;
+    color: $c-text;
+    font-family: $b-fontFamily;
+    font-size: $b-fontSize;
+    line-height: $b-lineHeight;
+}
+
+body {
+    position: relative;
+    font-size: 100%;
+    -webkit-font-smoothing: antialiased;
+}
+
+// -------------------------------------
+//   Block Content
+// -------------------------------------
+
+
+p,
+.p,
+ul,
+blockquote{
+    margin-bottom: $b-space;
+    margin-top: 0;
+}
+
+blockquote{
+    padding-left: $b-space;
+    color: $c-text-subdue;
+    border-left: $b-border;
+}
+
+.video-responsive,
+ul,
+ol,
+li,
+p,
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5{
+    &:last-child{
+        margin-bottom: 0;
+    }
+}
+
+.input,
+input[type="text"],
+input[type="search"],
+input[type="email"],
+input[type="password"],
+input[type="url"],
+input[type="number"],
+input[type="date"],
+input[type="week"],
+input[type="month"],
+input[type="datetime"],
+input[type="datetime-local"],
+textarea,
+select,
+input[type="submit"],
+button{
+    border: $b-border;
+    background-color: $c-background;
+    padding: $b-space-1of2;
+    margin-bottom: $b-space;
+}
+
+select::-ms-expand {
+    display: none;
+}
+
+.input,
+input,
+textarea,
+select,
+button{
+    display: block;
+    width: 100%;
+    margin-bottom: $b-space;
+}
+
+input[type="range"]{
+    -webkit-appearance: slider-horizontal;
+}
+
+input[type="checkbox"],
+input[type="radio"]{
+    position: relative;
+    display: inline-block;
+    vertical-align: sub;
+    width: $b-space;
+    height: $b-space;
+    border: 2px solid $c-highlight;
+    margin-right: $b-space-1of4;
+    margin-bottom: 0;
+
+    &:checked:before{
+        position: absolute;
+        top: 3px;
+        bottom: 3px;
+        left: 3px;
+        right: 3px;
+        background-color: $c-highlight;
+        content: "";
+    }
+}
+
+input[type="radio"]{
+
+    &,
+    &:before{
+        @include border-radius(50%);
+    }
+}
+
+label{
+    display: block;
+    font-style: italic;
+}
+
+input[type="submit"],
+button{
+    display: block;
+}
+
+// ----- Headings ----- //
+
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4 {
+    font-family: $b-fontFamily-heading;
+    line-height: $b-lineHeight-heading;
+    margin-bottom: $b-space;
+    margin-top: 0;
+}
+
+h1, .h1 {
+    font-size: $b-fontSize-l;
+}
+
+h2, .h2 {
+    font-size: $b-fontSize-l;
+}
+
+h3, .h3 {
+    font-size: $b-fontSize-l;
+}
+
+h4, .h4 {
+    font-size: $b-fontSize-l;
+}
+
+// -------------------------------------
+//   Inline Content
+// -------------------------------------
+
+// ----- Links ----- //
+
+a {
+    color: $c-highlight;
+    text-decoration: none;
+    &:hover,
+    &:focus {
+        p &{
+            text-decoration: underline;
+        }
+    }
+}
+
+// ----- Images ----- //
+
+img {
+    height: auto;
+    max-width: 100%;
+}
+
+// -------------------------------------
+//   Table Content
+// -------------------------------------
+
+table{
+    width: 100%;
+}
+
+td{
+    border: $b-border;
+    padding: $b-space-1of2;
+}
+
+thead td{
+    border-color: $c-highlight;
+    background-color: $c-highlight;
+    color: $c-text-invert;
+}
+
+tbody tr:first-of-type td{
+    border-top: none;
+}
+
+
+
+
+// -------------------------------------
+//   Wordpress
+// -------------------------------------
+
+.alignright {
+    float:right;
+    margin: $b-space-1of4 0 $b-space $b-space-2;
+}
+
+.alignleft {
+    float:left;
+    margin: $b-space-1of4 $b-space-2 $b-space 0;
+}
+
+.aligncenter {
+    display: block;
+    margin: $b-space-1of4 auto $b-space-1of4 auto;
+}
+
+.ab-top-menu{
+    overflow: initial;
+}
+
+.wp-caption{
+    width: auto !important;
+    margin-bottom: $b-space;
+}
+
+.wp-caption-text{
+    font-style: italic;
+    text-align: center;
+}
+
+// -------------------------------------
+//   Misc
+// -------------------------------------
+
+// ----- Highlight Color ----- //
+
+@include highlight-color($c-text-highlight);
+
+// ----- Responsive Videos ----- //
+
+.video-responsive{
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    margin-bottom: $b-space;
+
+    iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+}

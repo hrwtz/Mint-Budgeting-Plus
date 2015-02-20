@@ -1,0 +1,14 @@
+// *************************************
+//
+//   Btn
+//   -> Callout Button Styles
+//
+// *************************************
+
+.btn {
+  display: block;
+  padding: $b-space-1of4;
+  background-color: $c-highlight;
+  color: $c-text-invert;
+  text-align: center;
+}
