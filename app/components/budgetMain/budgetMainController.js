@@ -122,7 +122,6 @@ angular.module('myApp.budgetMain', []).
                     parents[parentID].budgets.push(budget);
                 };
 
-
                  // Set up totals budget
                 var totalSpentPercentage = monthlyBudgets.totals.total_spent / monthlyBudgets.totals.total_budgeted;
                 totalSpentPercentage = totalSpentPercentage > 1 ? 1 : totalSpentPercentage;

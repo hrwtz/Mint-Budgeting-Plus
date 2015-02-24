@@ -200,6 +200,9 @@ class Budgets extends CI_Controller {
 			);
 		endforeach;
 
+		// Only display latest 12 months
+		$results = array_slice($results, -12);
+
 		$this->output->set_output(json_encode($results));
 	}
 
