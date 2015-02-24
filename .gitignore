@@ -22,3 +22,6 @@ api/!application/logs/index.html
 api/!application/logs/.htaccess
 
 api/application/config/database.local.php
+api/application/config/mint.php
+
+api/cookie.txt
