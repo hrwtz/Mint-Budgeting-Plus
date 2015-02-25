@@ -14,27 +14,27 @@ class Transactions extends CI_Controller {
 		
 	}
 
-	public function get(){
+	public function get($budgets){
 		$this->load->helper('helpers');
 		$this->load->model('Transactions_model');
 
-		$transactions = $this->Transactions_model->get_transactions();
+		$transactions = $this->Transactions_model->get_transactions($budgets);
 
 		$results = array();
-	
 		foreach ($transactions as $transaction) :
 			$extended = false;
 			if ($transaction->end_date){
 				$start_date = new DateTime($transaction->date);
 				$start_date = $start_date->format('Y-m-d');
-				$extended = array(
-					'start_date' => $start_date,
-					'end_date' => $transaction->end_date,
-					'monthCount' => get_months_between_dates($start_date, $end_date)
-				);
+				if ($transaction->te_id)
+					$extended = array(
+						'start_date' => $start_date,
+						'end_date' => $transaction->end_date,
+						'monthCount' => get_months_between_dates($start_date, $transaction->end_date)
+					);
 			}
 			$results[] = array(
-				'transaction_id' => $transaction->transaction_id,
+				'transaction_id' => $transaction->id,
 				'account' => $transaction->account,
 				'category_id' => $transaction->category_id,
 				'date' => $transaction->date,

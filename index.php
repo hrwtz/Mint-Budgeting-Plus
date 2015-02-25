@@ -26,6 +26,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.5/angular-route.js"></script>
   <script src="app.js"></script>
   <script src="app/components/budgetMain/budgetMainController.js"></script>
+  <script src="app/components/transaction/transactionController.js"></script>
+  <script src="app/components/transaction/transactionService.js"></script>
   <script src="app/shared/monthnavitem/monthNavItemDirective.js"></script>
   <script src="app/shared/filters/filters.js"></script>
   <?php 

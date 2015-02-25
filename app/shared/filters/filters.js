@@ -7,4 +7,14 @@ angular.module('myApp.filters', [])
 
             return Math.abs(input);
         };
+    })
+    .filter('categoryName', function($preloaded){
+    	return function(input) {
+    		for (var i = 0; i < $preloaded.categories.length; i++) {
+                if ($preloaded.categories[i].category_id == input){
+                    return $preloaded.categories[i]['name'];
+                }
+            };
+            return input;
+    	}
     });

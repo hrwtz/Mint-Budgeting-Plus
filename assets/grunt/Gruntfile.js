@@ -32,16 +32,6 @@ module.exports = function(grunt) {
 		    },
 		},
 
-		cssmin: {
-		  	minify: {
-		    	expand: true,
-		    	cwd: '../css/',
-		    	src: ['*.css'],
-		    	dest: '../css/',
-		    	ext: '.css'
-		  	}
-		},
-
 		watch: {
 		    images: {
 		    	files: ['../img/src/**.{png,jpg,gif}'],
@@ -58,10 +48,6 @@ module.exports = function(grunt) {
 		    	files: ['../img/src/**.{svg}'],
 				tasks: ['svgstore'],
 		    },
-		    cssmin: {
-		    	files: ['../css/*.css', '!../css/*.min.css'],
-				tasks: ['cssmin'],
-		    }
 
 		},
 
@@ -84,6 +70,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-svgstore');
 
 	// Where we tell Grunt what to do when we type "grunt" into the terminal.
+	grunt.registerTask('build', ['compass']);
 	grunt.registerTask('default', ['imagemin', 'svgstore', 'compass', 'watch']);
 
 };

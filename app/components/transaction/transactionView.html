@@ -1,0 +1,30 @@
+<div class="row">
+	<div class="cell well">
+		<div class="g">
+			<div class="g-b">
+				<a href="#/">Back To Budgets</a>
+				<div ng-repeat="(date, transactions) in transactionDates">
+					<p class="transaction-date">{{date}}</p>
+					<ul>
+						<li ng-repeat="transaction in transactions" class="clearfix transaction">
+							<div class="transaction-info">
+								<p>{{transaction.merchant}}</p>
+								<p>{{transaction.category_id | categoryName}}</p>
+							</div>
+							<div class="transaction-amount">
+								<div ng-show="!transaction.extended">{{-transaction.amount | currency : '$'}}</div>
+								<div ng-show="transaction.extended">
+									{{(-transaction.amount / transaction.extended.monthCount) | currency : '$'}}
+									<br><span>Extended through {{transaction.extended.end_date | date : 'MMMM'}}</span>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<p class="transaction-none">No Transactions Found</p>
+				
+
+			</div>
+		</div>
+	</div>
+</div>
