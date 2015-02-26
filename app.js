@@ -7,6 +7,7 @@ angular.module('myApp', [
     'myApp.transactionService',
     'myApp.preload',
     'myApp.monthNavItem',
+    'myApp.persistentSelected',
     'myApp.filters',
     'ngRoute',
 ]).

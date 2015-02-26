@@ -1,7 +1,9 @@
 angular.module('myApp.transaction', []).
    /* Drivers controller */
-    controller('transactionController', function($scope, $routeParams, transactionService) {
+    controller('transactionController', function($scope, $routeParams, transactionService, persistentSelected) {
     	$scope.transactionDates = {};
+
+        $scope.selected = persistentSelected.getData();
 
         transactionService.getTransactions($routeParams.budgets).success(function(data){
         	for (var i = 0; i < data.length; i++) {
@@ -10,7 +12,7 @@ angular.module('myApp.transaction', []).
 
         		$scope.transactionDates[data[i].date].push(data[i]);
         	};
-        	console.log($scope.transactionDates)
+            $scope.isTransactionsEmpty = !Object.keys($scope.transactionDates).length;
         })
 
     });

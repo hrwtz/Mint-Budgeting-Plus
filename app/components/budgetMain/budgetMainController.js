@@ -38,27 +38,11 @@ function getColor(ratio){
 
 angular.module('myApp.budgetMain', []).
    /* Drivers controller */
-    controller('budgetMainController', function($scope, $preloaded) {
-        console.log($preloaded)
-
-        // Set up data for monthNav
-        $scope.budgetedMonths = [];
-        angular.forEach($preloaded.budgets, function(value, key){
-            this.push({
-                date: key,
-                selected: false,
-                isOver: value.totals.total_budgeted - value.totals.total_spent < 0
-            });
-        }, $scope.budgetedMonths);
-        
-
-        // Set latest month as selected
-        $scope.budgetedMonths[$scope.budgetedMonths.length-1].selected = true;
-
+    controller('budgetMainController', function($scope, $preloaded, persistentSelected) {
         // Set up selected months
         $scope.selectMonths = function(months){
             // Set default for months as the last month of budgets
-            months = typeof months !== 'undefined' ? months : [$scope.budgetedMonths[$scope.budgetedMonths.length-1].date];
+            months = typeof months.length !== 'undefined' ? months : [$scope.budgetedMonths[$scope.budgetedMonths.length-1].date];
 
             $scope.selected = [];
             // Set selected property of budgetedMonths if month has been selected
@@ -73,6 +57,9 @@ angular.module('myApp.budgetMain', []).
             var currentMonth = date.getMonth() + 1;
             if (currentMonth < 10) currentMonth = '0' + currentMonth;
             $scope.isCurrentMonth = ($scope.selected[0] == date.getFullYear() + '-' + currentMonth + "-01");
+
+            // Update service to share selected data
+            persistentSelected.setData($scope.selected)
 
             $scope.updateBudgets();
         }
@@ -153,6 +140,7 @@ angular.module('myApp.budgetMain', []).
                         if (spentPercentage > 1)spentPercentage = 1;
 
                         realBudget[currentBudget.category_id] = {
+                            id: currentBudget.id + ',' + realBudget[currentBudget.category_id].id,
                             category_id: currentBudget.category_id,
                             title: title,
                             budgetedAmount: budgetedAmount,
@@ -185,6 +173,23 @@ angular.module('myApp.budgetMain', []).
             return false;
         }
 
+        console.log($preloaded)
 
-        $scope.selectMonths();
+        // Set up data for monthNav
+        $scope.budgetedMonths = [];
+        angular.forEach($preloaded.budgets, function(value, key){
+            this.push({
+                date: key,
+                selected: false,
+                isOver: value.totals.total_budgeted - value.totals.total_spent < 0
+            });
+        }, $scope.budgetedMonths);
+        
+
+        // Set latest month as selected
+        $scope.budgetedMonths[$scope.budgetedMonths.length-1].selected = true;
+
+        // Set up selected months, and try and get selected data from persistent service
+        $scope.selectMonths(persistentSelected.getData());
+
     });
