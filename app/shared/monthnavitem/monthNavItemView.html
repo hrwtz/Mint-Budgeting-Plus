@@ -1,7 +1,9 @@
 <div class="" ng-class="{'is-selected': data.selected, 'is-over': data.isOver}">
 	<div class="monthNav-item-color"></div>
 	<div class="monthNav-item-date">
-		{{ data.date | date : 'MMM' }} <br>
-		{{ data.date | date : 'y' }}
+		<div class="monthNav-item-date-inner">
+			{{ data.date | date : 'MMM' }} <br>
+			{{ data.date | date : 'y' }}
+		</div>
 	</div>
 </div>
