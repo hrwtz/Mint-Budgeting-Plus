@@ -61,12 +61,15 @@ class Budgets_model extends CI_Model {
 
     // Gets categories for transactions in everything else budget
     function get_else_categories($not_category, $start_date, $end_date){
+        // Add default ignored categories to ignored cats
+        $not_category = array_merge($not_category, array(11,19,21,30,40));
+
         $query = $this->db
             ->select('category_id')
             ->from('transactions')
             ->join('categories', 'transactions.category_id = categories.id')
-            ->where_not_in('category_id', implode(',', $not_category))
-            ->where_not_in('parent_id', implode(',', $not_category))
+            ->where_not_in('category_id', $not_category)
+            ->where_not_in('parent_id', $not_category)
             ->where('date >=', $start_date)
             ->where('date <=', $end_date)
             ->group_by('category_id')

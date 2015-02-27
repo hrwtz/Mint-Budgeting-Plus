@@ -212,12 +212,17 @@ class Budgets extends CI_Controller {
 					$budget['else'] = $this->Budgets_model->get_else_categories($used_categories, $get_budget['date'], get_end_of_month($get_budget['date']));
 
 					// get spent amount
+					$else_spent_total = 0;
 					foreach ($budget['else'] as &$cat) :
+						$else_spent = $this->Budgets_model->get_budget_spent($cat, $get_budget['date'], get_end_of_month($get_budget['date']));
 						$cat = array(
 							'category_id' => $cat,
-							'spent' => $this->Budgets_model->get_budget_spent($cat, $get_budget['date'], get_end_of_month($get_budget['date']))
+							'spent' => $else_spent
 						);
+						$else_spent_total += $else_spent;
 					endforeach;
+
+					$budget['spent_amount'] = $else_spent_total;
 
 					break;
 				endif;
