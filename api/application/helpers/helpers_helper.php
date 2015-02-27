@@ -25,3 +25,10 @@ if ( ! function_exists('get_next_month')) :
 		return $date->format('Y-m-d');
     }   
 endif;
+
+if ( ! function_exists('get_end_of_month')) :
+    function get_end_of_month($date){
+        $date = new DateTime($date);
+        return $date->format('Y-m-t');
+    }   
+endif;

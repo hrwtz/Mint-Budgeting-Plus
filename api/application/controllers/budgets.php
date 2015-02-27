@@ -119,9 +119,15 @@ class Budgets extends CI_Controller {
 		$results = array();
 		$months = array();
 		
+		// Get Budgets
 		$budgets = $this->Budgets_model->get_budgets();
-
+		
 		foreach ($budgets as $budget) :
+			// Get spent amount and extended transactions
+			$budget->spent = $this->Budgets_model->get_budget_spent($budget->category_id, $budget->start_date, $budget->end_date);
+			$budget->transactions_extended = $this->Budgets_model->get_budget_extended($budget->category_id, $budget->start_date, $budget->end_date);
+
+
 			$extended_amount = 0;
 			$minus_transaction = 0;
 			foreach ($budget->transactions_extended as $transaction_extended) :
@@ -187,6 +193,38 @@ class Budgets extends CI_Controller {
 		$previous_value = $month;
 		endforeach;
 
+		// Do everything else budget if exists
+		foreach ($results as &$month) :
+			foreach ($month as &$budget) :
+				if ($budget['category_id'] === '0') :
+					$budget['spent_amount'] = 0;
+
+					$used_categories = [];
+
+					// Get categories already used
+					foreach ($month as $get_budget) :
+						if ($get_budget['category_id'] !== '0') :
+							$used_categories[] = $get_budget['category_id'];
+						endif;
+					endforeach;
+
+					// Get categories for transactions in everything else
+					$budget['else'] = $this->Budgets_model->get_else_categories($used_categories, $get_budget['date'], get_end_of_month($get_budget['date']));
+
+					// get spent amount
+					foreach ($budget['else'] as &$cat) :
+						$cat = array(
+							'category_id' => $cat,
+							'spent' => $this->Budgets_model->get_budget_spent($cat, $get_budget['date'], get_end_of_month($get_budget['date']))
+						);
+					endforeach;
+
+					break;
+				endif;
+			endforeach;
+		endforeach;
+
+		// Get total amounts
 		foreach ($results as &$month) :
 			$total_spent = 0;
 			$total_budgeted = 0;

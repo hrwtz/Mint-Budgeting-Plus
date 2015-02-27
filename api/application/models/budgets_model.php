@@ -42,40 +42,62 @@ class Budgets_model extends CI_Model {
             //->where('end_date <=', $end_date)
             ->get();
         $results = $query->result();
+        return $results;
+    }
 
-        foreach ($results as &$result) :
-            // Get Spent Amount
-            $query = $this->db
-                ->select('SUM(amount)')
-                ->from('transactions')
-                ->join('categories', 'transactions.category_id = categories.id')
-                ->where('(category_id = '.$result->category_id.' OR parent_id = '.$result->category_id.')')
-                ->where('date >=', $result->start_date)
-                ->where('date <=', $result->end_date)
-                ->get();
-            $sum = $query->result();
-            $sum = get_object_vars($sum[0]);
-            $result->spent = $sum['SUM(amount)'];
+    function get_budget_spent($category, $start_date, $end_date){
+        $query = $this->db
+            ->select('SUM(amount)')
+            ->from('transactions')
+            ->join('categories', 'transactions.category_id = categories.id')
+            ->where('(category_id = '.$category.' OR parent_id = '.$category.')')
+            ->where('date >=', $start_date)
+            ->where('date <=', $end_date)
+            ->get();
+        $sum = $query->result();
+        $sum = get_object_vars($sum[0]);
+        return $sum['SUM(amount)'];
+    }
 
-            // Get Extended transactions
-            $query = $this->db
-                ->select('*')
-                ->from('transactions t')
-                ->join('transactions_extended te', 't.id = te.transaction_id')
-                ->join('categories c', 't.category_id = c.id')
-                ->where('(
-                    (t.date >= "'.$result->start_date.'" AND t.date <= "'.$result->end_date.'")
-                    OR
-                    (te.end_date >= "'.$result->start_date.'" AND te.end_date <= "'.$result->end_date.'")
-                    OR
-                    ("'.$result->start_date.'" >= t.date AND "'.$result->start_date.'" <= te.end_date)
-                )')
-                ->where('(t.category_id = '.$result->category_id.' OR c.parent_id = '.$result->category_id.')')
-                ->get();
-            $result->transactions_extended = $query->result();
+    // Gets categories for transactions in everything else budget
+    function get_else_categories($not_category, $start_date, $end_date){
+        $query = $this->db
+            ->select('category_id')
+            ->from('transactions')
+            ->join('categories', 'transactions.category_id = categories.id')
+            ->where_not_in('category_id', implode(',', $not_category))
+            ->where_not_in('parent_id', implode(',', $not_category))
+            ->where('date >=', $start_date)
+            ->where('date <=', $end_date)
+            ->group_by('category_id')
+            ->order_by('category_id')
+            ->get();
+        $results = $query->result();
+        $categories = [];
+        foreach ($results as $result) :
+            $categories[] = $result->category_id;
         endforeach;
 
-        return $results;
+        return $categories;
+    }
+
+    function get_budget_extended($category, $start_date, $end_date){
+         $query = $this->db
+            ->select('*')
+            ->from('transactions t')
+            ->join('transactions_extended te', 't.id = te.transaction_id')
+            ->join('categories c', 't.category_id = c.id')
+            ->where('(
+                (t.date >= "'.$start_date.'" AND t.date <= "'.$end_date.'")
+                OR
+                (te.end_date >= "'.$start_date.'" AND te.end_date <= "'.$end_date.'")
+                OR
+                ("'.$start_date.'" >= t.date AND "'.$start_date.'" <= te.end_date)
+            )')
+            ->where('(t.category_id = '.$category.' OR c.parent_id = '.$category.')')
+            ->get();
+        $results = $query->result();
+        return $query->result();
     }
 
     function get_all_budget_categories($start_date, $end_date){
