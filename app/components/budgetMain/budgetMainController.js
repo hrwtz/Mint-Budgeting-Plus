@@ -79,7 +79,7 @@ angular.module('myApp.budgetMain', []).
                     if (parentID == '0') parentID = spending.category_id;
                     var parentCatName = getCategoryValue(parentID, 'name');
 
-                    if (!parents[parentID]){
+                    if (!parents[parentID] && parentID !== '0'){
                         parents[parentID] = {
                             budgets : [],
                             category_name : parentCatName,
@@ -108,24 +108,25 @@ angular.module('myApp.budgetMain', []).
                     }
 
                     // Set up everything else budget
-                    var elseBudget = [];
+                    // var elseBudget = [];
                     if (budget.category_id === '0'){
-                        for (var j = 0; j < spending.else.length; j++) {
-                            var elseParentID = getCategoryValue(spending.else[j].category_id, 'parent_id');
-                            if (elseParentID == '0') elseParentID = spending.else[j].category_id;
-                            var elseParentCatName = getCategoryValue(elseParentID, 'name');
-                            if (!elseBudget[elseParentID]){
-                                elseBudget[elseParentID] = new Array();
-                                elseBudget[elseParentID].category_id = elseParentID;
-                            }
-                            if (spending.else[j].category_id == elseParentID){
-                                spending.else[j].is_parent = true;
-                            }
-                            elseBudget[elseParentID].push(spending.else[j]);
-                        };
+                        // for (var j = 0; j < spending.else.length; j++) {
+                        //     var elseParentID = getCategoryValue(spending.else[j].category_id, 'parent_id');
+                        //     if (elseParentID == '0') elseParentID = spending.else[j].category_id;
+                        //     var elseParentCatName = getCategoryValue(elseParentID, 'name');
+                        //     if (!elseBudget[elseParentID]){
+                        //         elseBudget[elseParentID] = new Array();
+                        //         elseBudget[elseParentID].category_id = elseParentID;
+                        //     }
+                        //     if (spending.else[j].category_id == elseParentID){
+                        //         spending.else[j].is_parent = true;
+                        //     }
+                        //     elseBudget[elseParentID].push(spending.else[j]);
+                        // };
                     }
 
-                    parents[parentID].budgets.push(budget);
+                    if (budget.category_id !== '0')
+                        parents[parentID].budgets.push(budget);
                 };
 
                  // Set up totals budget
