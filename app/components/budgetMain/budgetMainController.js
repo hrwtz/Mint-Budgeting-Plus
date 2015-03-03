@@ -36,6 +36,15 @@ function getColor(ratio){
     return '#' + r + g + b;
 }
 
+function getLastDateOfMonth(date){
+    var d = new Date(date);
+    var d2 = new Date(d.getFullYear(), d.getMonth()+2, 0);
+    var yyyy = d2.getFullYear().toString();
+    var mm = (d2.getMonth()+1).toString();
+    var dd  = d2.getDate().toString();
+    return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+}
+
 angular.module('myApp.budgetMain', []).
    /* Drivers controller */
     controller('budgetMainController', function($scope, $preloaded, persistentSelected) {
@@ -69,6 +78,7 @@ angular.module('myApp.budgetMain', []).
         $scope.updateBudgets = function(){
             var parents = [];
             var totals;
+            var transactionUrl = '#/transactions/' + $scope.selected[0] +'/'+ getLastDateOfMonth($scope.selected[$scope.selected.length-1]) +'/';
             for (var i = 0; i < $scope.selected.length; i++) {
                 var monthlyBudgets = $preloaded.budgets[$scope.selected[i]];
 
@@ -105,6 +115,7 @@ angular.module('myApp.budgetMain', []).
                         spentColor: shadeColor(getColor(spentPercentage), -.2),
                         remainingAmount: spending.budgeted_amount - totalAmount,
                         monthPercentage: date.getDate() / daysInMonthDate,
+                        transactionUrl: transactionUrl + spending.category_id,
                     }
 
                     // Set up everything else budget
@@ -142,6 +153,7 @@ angular.module('myApp.budgetMain', []).
                     spentColor: shadeColor(getColor(totalSpentPercentage), -.2),
                     remainingAmount: monthlyBudgets.totals.total_budgeted - monthlyBudgets.totals.total_spent,
                     monthPercentage: date.getDate() / daysInMonthDate,
+                    transactionUrl: transactionUrl + 0,
                 });
             };
 
@@ -155,15 +167,13 @@ angular.module('myApp.budgetMain', []).
                         var spentAmount = realBudget[currentBudget.category_id].spentAmount + currentBudget.spentAmount,
                             remainingAmount = realBudget[currentBudget.category_id].remainingAmount + currentBudget.remainingAmount,
                             budgetedAmount = realBudget[currentBudget.category_id].budgetedAmount + currentBudget.budgetedAmount,
-                            title = getCategoryValue(currentBudget.category_id, 'name'),
                             spentPercentage = spentAmount / budgetedAmount;
-                        if (!title) title = '';
                         if (spentPercentage > 1)spentPercentage = 1;
 
                         realBudget[currentBudget.category_id] = {
                             id: currentBudget.id + ',' + realBudget[currentBudget.category_id].id,
                             category_id: currentBudget.category_id,
-                            title: title,
+                            title: currentBudget.title,
                             budgetedAmount: budgetedAmount,
                             spentAmount: spentAmount,
                             extendedAmount: realBudget[currentBudget.category_id].extendedAmount + currentBudget.extendedAmount,
@@ -171,6 +181,7 @@ angular.module('myApp.budgetMain', []).
                             spentPercentage: spentPercentage,
                             spentColor: shadeColor(getColor(spentAmount / budgetedAmount), -.2),
                             remainingAmount: remainingAmount,
+                            transactionUrl: transactionUrl + currentBudget.category_id,
                         }
                     }else{
                         realBudget[currentBudget.category_id] = currentBudget;
@@ -178,6 +189,8 @@ angular.module('myApp.budgetMain', []).
                 }
                 parents[parent_cat].budgets = realBudget;
             };
+
+            console.log(parents)
 
 
             $scope.parentBudgets = [];
@@ -189,7 +202,6 @@ angular.module('myApp.budgetMain', []).
                     $scope.parentBudgets[parent_cat] = (parents[parent_cat]);
                 }
             }
-            console.log($scope.parentBudgets)
 
         }
 
@@ -201,8 +213,6 @@ angular.module('myApp.budgetMain', []).
             };
             return false;
         }
-
-        console.log($preloaded)
 
         // Set up data for monthNav
         $scope.budgetedMonths = [];

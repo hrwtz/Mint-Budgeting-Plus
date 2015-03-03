@@ -10,6 +10,7 @@ angular.module('myApp.budgetLine', []).
         	replace: true,
         	scope: {
                 budget: '=',
+                selected: '=',
             },
         	link: function(scope, element, attrs){
                 

@@ -1,6 +1,6 @@
 <div class="budgetLine">
 	<div class="budgetLine-info clearfix">
-		<a href="#/transactions/{{budget.id}}" class="budgetLine-title">{{budget.title}}</a>
+		<a href="{{budget.transactionUrl}}" class="budgetLine-title">{{budget.title}}</a>
 		<div class="budgetLine-remaining">{{budget.remainingAmount | positive | currency : '$'}} {{budget.remainingAmount < 0 ? 'Over' : 'Left'}}</div>
 	</div>
 	<div class="budgetLine-bar">

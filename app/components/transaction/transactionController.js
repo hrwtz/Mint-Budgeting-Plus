@@ -5,7 +5,7 @@ angular.module('myApp.transaction', []).
 
         $scope.selected = persistentSelected.getData();
 
-        transactionService.getTransactions($routeParams.budgets).success(function(data){
+        transactionService.getTransactions($routeParams.start_date, $routeParams.end_date, $routeParams.category_id).success(function(data){
         	for (var i = 0; i < data.length; i++) {
         		if (!$scope.transactionDates[data[i].date])
         			$scope.transactionDates[data[i].date] = [];

@@ -25,16 +25,6 @@ class Transactions extends CI_Controller {
 
 	}
 
-	public function get_by_budget($budgets){
-		$this->load->model('Transactions_model');
-
-		$transactions = $this->Transactions_model->get_transactions_by_budget($budgets);
-
-		$results = $this->_transactions_to_results($transactions);
-
-		$this->output->set_output(json_encode($results));
-	}
-
 	private function _transactions_to_results($transactions){
 		$this->load->helper('helpers');
 
