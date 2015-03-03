@@ -14,11 +14,29 @@ class Transactions extends CI_Controller {
 		
 	}
 
-	public function get($budgets){
-		$this->load->helper('helpers');
+	public function get($start_date, $end_date, $category_id = false){
 		$this->load->model('Transactions_model');
 
-		$transactions = $this->Transactions_model->get_transactions($budgets);
+		$transactions = $this->Transactions_model->get_transactions($start_date, $end_date, $category_id);
+
+		$results = $this->_transactions_to_results($transactions);
+
+		$this->output->set_output(json_encode($results));
+
+	}
+
+	public function get_by_budget($budgets){
+		$this->load->model('Transactions_model');
+
+		$transactions = $this->Transactions_model->get_transactions_by_budget($budgets);
+
+		$results = $this->_transactions_to_results($transactions);
+
+		$this->output->set_output(json_encode($results));
+	}
+
+	private function _transactions_to_results($transactions){
+		$this->load->helper('helpers');
 
 		$results = array();
 		foreach ($transactions as $transaction) :
@@ -43,8 +61,7 @@ class Transactions extends CI_Controller {
 				'extended' => $extended,
 			);
 		endforeach;
-
-		$this->output->set_output(json_encode($results));
+		return $results;
 	}
 }
 

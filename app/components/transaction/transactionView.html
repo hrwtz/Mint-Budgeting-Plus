@@ -12,9 +12,9 @@
 								<p>{{transaction.category_id | categoryName}}</p>
 							</div>
 							<div class="transaction-amount">
-								<div ng-show="!transaction.extended">{{-transaction.amount | currency : '$'}}</div>
+								<div ng-show="!transaction.extended">{{-transaction.amount | currencyCustom : '$'}}</div>
 								<div ng-show="transaction.extended">
-									{{(-transaction.amount / transaction.extended.monthCount) | currency : '$'}}
+									{{(-transaction.amount / transaction.extended.monthCount) | currencyCustom : '$'}}
 									<br><span>Extended through {{transaction.extended.end_date | date : 'MMMM'}}</span>
 								</div>
 							</div>

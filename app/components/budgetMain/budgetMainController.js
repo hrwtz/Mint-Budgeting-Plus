@@ -68,6 +68,7 @@ angular.module('myApp.budgetMain', []).
         // Set up budget data based on selected months
         $scope.updateBudgets = function(){
             var parents = [];
+            var totals;
             for (var i = 0; i < $scope.selected.length; i++) {
                 var monthlyBudgets = $preloaded.budgets[$scope.selected[i]];
 
@@ -106,15 +107,34 @@ angular.module('myApp.budgetMain', []).
                         monthPercentage: date.getDate() / daysInMonthDate,
                     }
 
+                    // Set up everything else budget
+                    var elseBudget = [];
+                    if (budget.category_id === '0'){
+                        for (var j = 0; j < spending.else.length; j++) {
+                            var elseParentID = getCategoryValue(spending.else[j].category_id, 'parent_id');
+                            if (elseParentID == '0') elseParentID = spending.else[j].category_id;
+                            var elseParentCatName = getCategoryValue(elseParentID, 'name');
+                            if (!elseBudget[elseParentID]){
+                                elseBudget[elseParentID] = new Array();
+                                elseBudget[elseParentID].category_id = elseParentID;
+                            }
+                            if (spending.else[j].category_id == elseParentID){
+                                spending.else[j].is_parent = true;
+                            }
+                            elseBudget[elseParentID].push(spending.else[j]);
+                        };
+                    }
+
                     parents[parentID].budgets.push(budget);
                 };
 
                  // Set up totals budget
                 var totalSpentPercentage = monthlyBudgets.totals.total_spent / monthlyBudgets.totals.total_budgeted;
                 totalSpentPercentage = totalSpentPercentage > 1 ? 1 : totalSpentPercentage;
-                if (!parents[0]) parents[0] = {category_name: "Total", budgets: []};
-                parents[0].budgets.push({
+                if (!parents.totals) parents.totals = {budgets: []};
+                parents.totals.budgets.push({
                     category_id: 0,
+                    title: 'Total',
                     budgetedAmount: monthlyBudgets.totals.total_budgeted,
                     spentAmount: monthlyBudgets.totals.total_spent,
                     spentPercentage: totalSpentPercentage,
@@ -155,13 +175,21 @@ angular.module('myApp.budgetMain', []).
                         realBudget[currentBudget.category_id] = currentBudget;
                     }
                 }
-                parents[parent_cat].budgets = realBudget
+                parents[parent_cat].budgets = realBudget;
             };
+
 
             $scope.parentBudgets = [];
             for (var parent_cat in parents){
-                $scope.parentBudgets.push(parents[parent_cat]);
+                // If array key is a number, push it to final array, otherwise keep the key (as associative)
+                if (Number(parent_cat) == parent_cat){
+                    $scope.parentBudgets.push(parents[parent_cat]);
+                }else{
+                    $scope.parentBudgets[parent_cat] = (parents[parent_cat]);
+                }
             }
+            console.log($scope.parentBudgets)
+
         }
 
         var getCategoryValue = function(categoryID, value){

@@ -29,6 +29,7 @@
   <script src="app/components/transaction/transactionController.js"></script>
   <script src="app/components/transaction/transactionService.js"></script>
   <script src="app/shared/monthnavitem/monthNavItemDirective.js"></script>
+  <script src="app/shared/budgetLine/budgetLineDirective.js"></script>
   <script src="app/shared/filters/filters.js"></script>
   <script src="app/shared/persistentSelected/persistentSelected.js"></script>
   <?php 

@@ -7,13 +7,14 @@ angular.module('myApp', [
     'myApp.transactionService',
     'myApp.preload',
     'myApp.monthNavItem',
+    'myApp.budgetLine',
     'myApp.persistentSelected',
     'myApp.filters',
     'ngRoute',
 ]).
 config(['$routeProvider', function($routeProvider) {
     $routeProvider
-        .when('/transactions/:budgets', {
+        .when('/transactions/:budgets?', {
             templateUrl: 'app/components/transaction/transactionView.html',
             controller: 'transactionController',
         })

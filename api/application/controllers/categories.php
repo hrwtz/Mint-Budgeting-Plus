@@ -30,6 +30,14 @@ class Categories extends CI_Controller {
 			);
 		endforeach;
 
+		// Add Everything Else Category
+		$results[] = array(
+			'category_id' => 0,
+			'name' => 'Everything Else',
+			'isL1' => 0,
+			'parent_id' => 0,
+		);
+
 		$this->output->set_output(json_encode($results));
 	}
 }
