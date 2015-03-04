@@ -238,8 +238,8 @@ class Budgets extends CI_Controller {
 				$total_budgeted += $budgeted_month['budgeted_amount'];
 			endforeach;
 			$month['totals'] = array(
-				'total_spent' => $total_spent,
-				'total_budgeted' => $total_budgeted,
+				'spent_amount' => $total_spent,
+				'budgeted_amount' => $total_budgeted,
 			);
 		endforeach;
 

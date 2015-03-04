@@ -78,121 +78,59 @@ angular.module('myApp.budgetMain', []).
         $scope.updateBudgets = function(){
             var parents = [];
             var totals;
-            var transactionUrl = '#/transactions/' + $scope.selected[0] +'/'+ getLastDateOfMonth($scope.selected[$scope.selected.length-1]) +'/';
+            var elseBudget;
             for (var i = 0; i < $scope.selected.length; i++) {
+
                 var monthlyBudgets = $preloaded.budgets[$scope.selected[i]];
 
+                var date = new Date();
+                var daysInMonthDate = new Date(date.getFullYear(), date.getMonth()+1, 0).getDate();
+
+                // Set up totals budget
+                if (!parents.totals) parents.totals = {budgets: []};
+                parents.totals.budgets.push(
+                    setUpBudget(monthlyBudgets.totals, true)
+                );
+
                 for (var k = 0; k < Object.keys(monthlyBudgets).length - 1; k++) {
-                    var spending = monthlyBudgets[k];
+                    var budget = setUpBudget(monthlyBudgets[k])
+
+                    // If else budget, break out of loop and save budget
+                    if (monthlyBudgets[k].category_id === '0'){
+                        // elseBudget = budget;
+                        break;
+                    }
+
                     // Set up parent Object
-                    var parentID = getCategoryValue(spending.category_id, 'parent_id');
-                    if (parentID == '0') parentID = spending.category_id;
+                    var parentID = getCategoryValue(monthlyBudgets[k].category_id, 'parent_id');
+                    if (parentID == '0') parentID = monthlyBudgets[k].category_id;
                     var parentCatName = getCategoryValue(parentID, 'name');
 
-                    if (!parents[parentID] && parentID !== '0'){
+                    if (!parents[parentID]){
                         parents[parentID] = {
                             budgets : [],
                             category_name : parentCatName,
                             category_id : parentID,
                         };
                     }
-
-                    // Set up budget object
-                    var date = new Date();
-                    var daysInMonthDate = new Date(date.getFullYear(), date.getMonth()+1, 0).getDate();
-                    var totalAmount = - spending.rollover_amount - spending.extended_amount + spending.spent_amount
-                    var spentPercentage = totalAmount / spending.budgeted_amount;
-                    spentPercentage = spentPercentage > 1 ? 1 : spentPercentage;
-                    var budget = {
-                        id: spending.budget_id,
-                        category_id: spending.category_id,
-                        title: getCategoryValue(spending.category_id, 'name'),
-                        budgetedAmount: spending.budgeted_amount,
-                        spentAmount: spending.spent_amount,
-                        extendedAmount: spending.extended_amount,
-                        rolloverAmount: spending.rollover_amount,
-                        spentPercentage: spentPercentage,
-                        spentColor: shadeColor(getColor(spentPercentage), -.2),
-                        remainingAmount: spending.budgeted_amount - totalAmount,
-                        monthPercentage: date.getDate() / daysInMonthDate,
-                        transactionUrl: transactionUrl + spending.category_id,
-                    }
-
-                    // Set up everything else budget
-                    // var elseBudget = [];
-                    if (budget.category_id === '0'){
-                        // for (var j = 0; j < spending.else.length; j++) {
-                        //     var elseParentID = getCategoryValue(spending.else[j].category_id, 'parent_id');
-                        //     if (elseParentID == '0') elseParentID = spending.else[j].category_id;
-                        //     var elseParentCatName = getCategoryValue(elseParentID, 'name');
-                        //     if (!elseBudget[elseParentID]){
-                        //         elseBudget[elseParentID] = new Array();
-                        //         elseBudget[elseParentID].category_id = elseParentID;
-                        //     }
-                        //     if (spending.else[j].category_id == elseParentID){
-                        //         spending.else[j].is_parent = true;
-                        //     }
-                        //     elseBudget[elseParentID].push(spending.else[j]);
-                        // };
-                    }
-
-                    if (budget.category_id !== '0')
-                        parents[parentID].budgets.push(budget);
+                    
+                    parents[parentID].budgets.push(budget);
                 };
 
-                 // Set up totals budget
-                var totalSpentPercentage = monthlyBudgets.totals.total_spent / monthlyBudgets.totals.total_budgeted;
-                totalSpentPercentage = totalSpentPercentage > 1 ? 1 : totalSpentPercentage;
-                if (!parents.totals) parents.totals = {budgets: []};
-                parents.totals.budgets.push({
-                    category_id: 0,
-                    title: 'Total',
-                    budgetedAmount: monthlyBudgets.totals.total_budgeted,
-                    spentAmount: monthlyBudgets.totals.total_spent,
-                    spentPercentage: totalSpentPercentage,
-                    spentColor: shadeColor(getColor(totalSpentPercentage), -.2),
-                    remainingAmount: monthlyBudgets.totals.total_budgeted - monthlyBudgets.totals.total_spent,
-                    monthPercentage: date.getDate() / daysInMonthDate,
-                    transactionUrl: transactionUrl + 0,
-                });
+                
+                // Set up everything else budget
+                // if (!parents.else) parents.else = {budgets: []};
+                // parents.else.budgets.push(elseBudget);
+                // console.log(parents)
             };
 
-            // Add budgets together for when selecting multiple months
-            for (var parent_cat in parents){
-                var realBudget = {};
-                for (var i = 0; i < parents[parent_cat].budgets.length; i++) {
-                    var currentBudget = parents[parent_cat].budgets[i];
-
-                    if (realBudget[currentBudget.category_id]){
-                        var spentAmount = realBudget[currentBudget.category_id].spentAmount + currentBudget.spentAmount,
-                            remainingAmount = realBudget[currentBudget.category_id].remainingAmount + currentBudget.remainingAmount,
-                            budgetedAmount = realBudget[currentBudget.category_id].budgetedAmount + currentBudget.budgetedAmount,
-                            spentPercentage = spentAmount / budgetedAmount;
-                        if (spentPercentage > 1)spentPercentage = 1;
-
-                        realBudget[currentBudget.category_id] = {
-                            id: currentBudget.id + ',' + realBudget[currentBudget.category_id].id,
-                            category_id: currentBudget.category_id,
-                            title: currentBudget.title,
-                            budgetedAmount: budgetedAmount,
-                            spentAmount: spentAmount,
-                            extendedAmount: realBudget[currentBudget.category_id].extendedAmount + currentBudget.extendedAmount,
-                            rolloverAmount: realBudget[currentBudget.category_id].rolloverAmount + currentBudget.rolloverAmount,
-                            spentPercentage: spentPercentage,
-                            spentColor: shadeColor(getColor(spentAmount / budgetedAmount), -.2),
-                            remainingAmount: remainingAmount,
-                            transactionUrl: transactionUrl + currentBudget.category_id,
-                        }
-                    }else{
-                        realBudget[currentBudget.category_id] = currentBudget;
-                    }
-                }
-                parents[parent_cat].budgets = realBudget;
-            };
-
+            // Combine budgets together for when selecting multiple months
             console.log(parents)
+            for (var parent_cat in parents){
+                parents[parent_cat].budgets = combineBudgets(parents[parent_cat].budgets);
+            };
 
-
+            // Set up final scope array
             $scope.parentBudgets = [];
             for (var parent_cat in parents){
                 // If array key is a number, push it to final array, otherwise keep the key (as associative)
@@ -212,7 +150,77 @@ angular.module('myApp.budgetMain', []).
                 }
             };
             return false;
-        }
+        };
+
+        var setUpBudget = function(spending, isTotals){
+            // Set up budget object
+            spending.rollover_amount = spending.rollover_amount ? spending.rollover_amount : 0;
+            spending.extended_amount = spending.extended_amount ? spending.extended_amount : 0;
+            var date = new Date();
+            var daysInMonthDate = new Date(date.getFullYear(), date.getMonth()+1, 0).getDate();
+            var totalAmount = - spending.rollover_amount - spending.extended_amount + spending.spent_amount
+            var spentPercentage = totalAmount / spending.budgeted_amount;
+            spentPercentage = spentPercentage > 1 ? 1 : spentPercentage;
+            var elseCategories = new Array();
+            if (spending.else){
+                for (var i = 0; i < spending.else.length; i++) {
+                    elseCategories.push(spending.else[i].category_id);
+                };
+            }
+            transactionUrlCategories = elseCategories.length ? elseCategories.join(',') : spending.category_id;
+            return {
+                id: spending.budget_id,
+                category_id: isTotals ? 0 : spending.category_id,
+                title: isTotals ? 'Total' : getCategoryValue(spending.category_id, 'name'),
+                budgetedAmount: spending.budgeted_amount,
+                spentAmount: spending.spent_amount,
+                extendedAmount: spending.extended_amount,
+                rolloverAmount: spending.rollover_amount,
+                spentPercentage: spentPercentage,
+                spentColor: shadeColor(getColor(spentPercentage), -.2),
+                remainingAmount: spending.budgeted_amount - totalAmount,
+                monthPercentage: date.getDate() / daysInMonthDate,
+                transactionUrl: getTransactionUrl(transactionUrlCategories),
+                else: spending.else,
+            }
+        };
+
+        var combineBudgets = function(budgets){
+            var combinedBudget = {};
+            for (var i = 0; i < budgets.length; i++) {
+                var nextBudget = budgets[i];
+
+                if (combinedBudget[nextBudget.category_id]){
+                    var spentAmount = combinedBudget[nextBudget.category_id].spentAmount + nextBudget.spentAmount,
+                        remainingAmount = combinedBudget[nextBudget.category_id].remainingAmount + nextBudget.remainingAmount,
+                        budgetedAmount = combinedBudget[nextBudget.category_id].budgetedAmount + nextBudget.budgetedAmount,
+                        spentPercentage = spentAmount / budgetedAmount;
+                    if (spentPercentage > 1)spentPercentage = 1;
+
+                    combinedBudget[nextBudget.category_id] = {
+                        id: nextBudget.id + ',' + combinedBudget[nextBudget.category_id].id,
+                        category_id: nextBudget.category_id,
+                        title: nextBudget.title,
+                        budgetedAmount: budgetedAmount,
+                        spentAmount: spentAmount,
+                        extendedAmount: combinedBudget[nextBudget.category_id].extendedAmount + nextBudget.extendedAmount,
+                        rolloverAmount: combinedBudget[nextBudget.category_id].rolloverAmount + nextBudget.rolloverAmount,
+                        spentPercentage: spentPercentage,
+                        spentColor: shadeColor(getColor(spentAmount / budgetedAmount), -.2),
+                        remainingAmount: remainingAmount,
+                        transactionUrl: getTransactionUrl(nextBudget.category_id),
+                    }
+                }else{
+                    combinedBudget[nextBudget.category_id] = nextBudget;
+                }
+            }
+            return combinedBudget;
+        };
+
+        var getTransactionUrl = function(categories){
+            if (!categories) categories = '';
+            return '#/transactions/' + $scope.selected[0] +'/'+ getLastDateOfMonth($scope.selected[$scope.selected.length-1]) +'/' +categories;
+        };
 
         // Set up data for monthNav
         $scope.budgetedMonths = [];

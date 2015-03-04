@@ -14,7 +14,7 @@ angular.module('myApp', [
 ]).
 config(['$routeProvider', function($routeProvider) {
     $routeProvider
-        .when('/transactions/:start_date/:end_date/:category_id', {
+        .when('/transactions/:start_date/:end_date/:category_id?', {
             templateUrl: 'app/components/transaction/transactionView.html',
             controller: 'transactionController',
         })
