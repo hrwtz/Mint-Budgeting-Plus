@@ -97,19 +97,17 @@ angular.module('myApp.budgetMain', []).
 
                     // If else budget, break out of loop and save budget
                     if (monthlyBudgets[k].category_id === '0'){
-                        // elseBudget = budget;
+                        elseBudget = monthlyBudgets[k];
                         break;
                     }
 
                     // Set up parent Object
-                    var parentID = getCategoryValue(monthlyBudgets[k].category_id, 'parent_id');
-                    if (parentID == '0') parentID = monthlyBudgets[k].category_id;
-                    var parentCatName = getCategoryValue(parentID, 'name');
+                    var parentID = getParentId(monthlyBudgets[k].category_id);
 
                     if (!parents[parentID]){
                         parents[parentID] = {
                             budgets : [],
-                            category_name : parentCatName,
+                            category_name : getCategoryValue(parentID, 'name'),
                             category_id : parentID,
                         };
                     }
@@ -117,15 +115,48 @@ angular.module('myApp.budgetMain', []).
                     parents[parentID].budgets.push(budget);
                 };
 
-                
+                break;
                 // Set up everything else budget
                 // if (!parents.else) parents.else = {budgets: []};
                 // parents.else.budgets.push(elseBudget);
-                // console.log(parents)
+                var bud = new Array();
+                var elseCategories = new Array();
+                console.log(elseBudget)
+                if (elseBudget.elseBudget){
+                    for (var k = 0; k < elseBudget.else.length; k++) {
+                        elseCategories.push(elseBudget.else[k].category_id);
+                        var elseParentID = getParentId(elseBudget.else[k].category_id);
+                        if (!bud[elseParentID]){
+                            bud[elseParentID] = [];
+                        }
+                        // bud[elseParentID].spent += Number(elseBudget.elseBudget[k].spent);
+                        // console.log(elseBudget)
+                        bud[elseParentID].push({
+                            category_name: getCategoryValue(elseBudget.elseBudget[k].category_id, 'name'),
+                            category_id: elseBudget.elseBudget[k].category_id,
+                            spent: elseBudget.elseBudget[k].spent,
+                            isParent: getCategoryValue(elseBudget.elseBudget[k].category_id, 'parent_id') == 0
+                        })
+                    }
+                }
+                elseBudget.elseBudget = bud;
+                elseBudget.elseBudget.elseCategories = elseCategories;
+                // if (!parents.else) parents.else = {budgets: []};
+                parents.push({
+                    budgets:[setUpBudget(elseBudget)],
+                    category_name : getCategoryValue(elseBudget.category_id, 'name'),
+                    category_id : elseBudget.category_id,
+                })
+
+                // console.log({
+                //     budgets:[setUpBudget(elseBudget)],
+                //     category_name : getCategoryValue(elseBudget.category_id, 'name'),
+                //     category_id : elseBudget.category_id,
+                // })
+                
             };
 
             // Combine budgets together for when selecting multiple months
-            console.log(parents)
             for (var parent_cat in parents){
                 parents[parent_cat].budgets = combineBudgets(parents[parent_cat].budgets);
             };
@@ -140,6 +171,7 @@ angular.module('myApp.budgetMain', []).
                     $scope.parentBudgets[parent_cat] = (parents[parent_cat]);
                 }
             }
+            // console.log($scope.parentBudgets)
 
         }
 
@@ -152,7 +184,15 @@ angular.module('myApp.budgetMain', []).
             return false;
         };
 
+        // Get's parent category ID. If category is a parent, returns back the category ID
+        var getParentId = function(categoryID){
+            var parentID = getCategoryValue(categoryID, 'parent_id');
+            if (parentID == '0') parentID = categoryID;
+            return parentID;
+        }
+
         var setUpBudget = function(spending, isTotals){
+            isTotals = (typeof isTotals !== 'undefined') ? isTotals : false;
             // Set up budget object
             spending.rollover_amount = spending.rollover_amount ? spending.rollover_amount : 0;
             spending.extended_amount = spending.extended_amount ? spending.extended_amount : 0;
@@ -161,13 +201,19 @@ angular.module('myApp.budgetMain', []).
             var totalAmount = - spending.rollover_amount - spending.extended_amount + spending.spent_amount
             var spentPercentage = totalAmount / spending.budgeted_amount;
             spentPercentage = spentPercentage > 1 ? 1 : spentPercentage;
-            var elseCategories = new Array();
-            if (spending.else){
-                for (var i = 0; i < spending.else.length; i++) {
-                    elseCategories.push(spending.else[i].category_id);
-                };
-            }
-            transactionUrlCategories = elseCategories.length ? elseCategories.join(',') : spending.category_id;
+            // var elseCategories = new Array();
+            // if (spending.else){
+            //     angular.forEach(spending.else, function(value, parentCategory) {
+            //         elseCategories.push(value.category_id);
+            //     });
+            // }
+            // console.log(spending.else.elseCategories)
+            // transactionUrlCategories = spending.else.elseCategories.length ? spending.else.elseCategories.join(',') : spending.category_id;
+
+            // if ('elseBudget' in spending && 'elseCategories' in spending.elseBudget){
+            //     console.log(spending.elseBudget.elseCategories)
+            // }
+            transactionUrlCategories = 1;
             return {
                 id: spending.budget_id,
                 category_id: isTotals ? 0 : spending.category_id,
@@ -181,7 +227,7 @@ angular.module('myApp.budgetMain', []).
                 remainingAmount: spending.budgeted_amount - totalAmount,
                 monthPercentage: date.getDate() / daysInMonthDate,
                 transactionUrl: getTransactionUrl(transactionUrlCategories),
-                else: spending.else,
+                else: spending.elseBudget,
             }
         };
 

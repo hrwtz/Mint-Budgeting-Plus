@@ -11,19 +11,17 @@
 				</ul>
 
 				<!-- Totals -->
-				<budgetline budget="parentBudgets.totals.budgets[0]" selected="selected"></budgetline>
+				<budgetline budget="parentBudgets.totals.budgets[0]"></budgetline>
 
 				<!-- Spending -->
 				<div ng-repeat="parents in parentBudgets">
 					<p class="budgetGroup">{{parents.category_name}}</p>
 					<ul>
 						<li ng-repeat="budget in parents.budgets">
-							<budgetline budget="budget" selected="selected"></budgetline>
+							<budgetline budget="budget"></budgetline>
 						</li>
 					</ul>
 				</div>
-
-				<!-- Everything Else -->
 
 			</div>
 		</div>
