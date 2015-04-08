@@ -118,7 +118,17 @@ class Budgets extends CI_Controller {
 
 		$results = array();
 		$months = array();
-		
+
+		// If new month, duplicate old budgets
+		$last_month_budgeted = $this->Budgets_model->get_last_budget_month()[0]->start_date;
+		$next_month_budgeted = $last_month_budgeted;
+		$current_month_begining = date('Y-m-01');
+		$months_between_last_budgeted = get_months_between_dates($last_month_budgeted, $current_month_begining) - 1;
+		for ($i=0; $i < $months_between_last_budgeted; $i++) : 
+			$next_month_budgeted = get_next_month($next_month_budgeted);
+			$this->Budgets_model->duplicate_new_month_budget($next_month_budgeted, get_end_of_month($next_month_budgeted), $last_month_budgeted);
+		endfor;
+
 		// Get Budgets
 		$budgets = $this->Budgets_model->get_budgets();
 		

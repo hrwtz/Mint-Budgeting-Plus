@@ -99,7 +99,6 @@ class Budgets_model extends CI_Model {
             )')
             ->where('(t.category_id = '.$category.' OR c.parent_id = '.$category.')')
             ->get();
-        $results = $query->result();
         return $query->result();
     }
 
@@ -114,6 +113,28 @@ class Budgets_model extends CI_Model {
             $categories[] = $result->category_id;
         endforeach;
         return $categories;
+    }
+
+    function duplicate_new_month_budget($start_date, $end_date, $old_date){
+        $query = $this->db
+            ->query("
+                INSERT INTO budgets 
+                    (category_id, start_date, end_date, is_rollover, amount)
+                SELECT category_id, '".$this->db->escape_str($start_date)."', '".$this->db->escape_str($end_date)."', is_rollover, amount
+                FROM budgets
+                WHERE start_date = '".$this->db->escape_str($old_date)."'
+            ");
+        return $this->db->affected_rows() > 0;
+    }
+
+    function get_last_budget_month(){
+        $query = $this->db
+            ->select('start_date')
+            ->from('budgets')
+            ->order_by('start_date', 'DESC')
+            ->limit(1)
+            ->get();
+        return $query->result();
     }
 
 }

@@ -13,7 +13,7 @@ endif;
 if ( ! function_exists('get_previous_month')) :
     function get_previous_month($date){
     	$date = new DateTime($date);
-		$date->sub(new DateInterval('1 month'));
+		$date->sub(new DateInterval('P1M'));
 		return $date->format('Y-m-d');
     }   
 endif;
@@ -21,7 +21,7 @@ endif;
 if ( ! function_exists('get_next_month')) :
     function get_next_month($date){
     	$date = new DateTime($date);
-		$date->add(new DateInterval('1 month'));
+		$date->add(new DateInterval('P1M'));
 		return $date->format('Y-m-d');
     }   
 endif;
