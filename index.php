@@ -36,7 +36,6 @@
   function get_curl($url){
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
     $result = curl_exec($ch);
@@ -46,10 +45,12 @@
   }
   ?>
   <script>
+    <?php $apiLocation = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . 'api/index.php/'; ?>
+    var apiLocation = '<?php echo $apiLocation; ?>';
     angular.module('myApp.preload', [])
     .constant('$preloaded', {
-      'categories' : <?php echo get_curl('http://localhost/budgets/api/index.php/categories/get'); ?>,
-      'budgets' : <?php echo get_curl('http://localhost/budgets/api/index.php/budgets/get'); ?>
+      'categories' : <?php echo get_curl($apiLocation . 'categories/get'); ?>,
+      'budgets' : <?php echo get_curl($apiLocation . 'budgets/get'); ?>
     });
   </script>
 </body>

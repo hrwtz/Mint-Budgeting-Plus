@@ -120,6 +120,10 @@ class Budgets extends CI_Controller {
 		$months = array();
 
 		// If new month, duplicate old budgets
+		if (!$this->Budgets_model->get_last_budget_month()){
+			echo json_encode(array());
+			return;
+		}
 		$last_month_budgeted = $this->Budgets_model->get_last_budget_month()[0]->start_date;
 		$next_month_budgeted = $last_month_budgeted;
 		$current_month_begining = date('Y-m-01');

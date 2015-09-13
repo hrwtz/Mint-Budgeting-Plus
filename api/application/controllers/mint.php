@@ -5,11 +5,16 @@ class Mint extends CI_Controller {
 	public function index(){
 		$this->config->load('mint');
 		$this->load->model('Insert_model');
-		$this->load->library('phpmintapi', array(
-			'email' => $this->config->item('username'),
-			'password' => $this->config->item('password'),
-			'cookieFilePath' => FCPATH . 'cookie.txt'
-		));
+		try {
+			$this->load->library('phpmintapi', array(
+				'email' => $this->config->item('username'),
+				'password' => $this->config->item('password'),
+				'cookieFilePath' => FCPATH . 'cookie.txt'
+			));
+		} catch(Exception $e) {
+			echo 'Caught exception: ' .  $e->getMessage() . "\n";
+			exit;
+		}
 
 		try {
 			$token = $this->phpmintapi->connect();
@@ -18,7 +23,7 @@ class Mint extends CI_Controller {
 			exit;
 		}
 
-		// Keep making calls to get transcations until we have hit the end
+	// Keep making calls to get transcations until we have hit the end
 		$offset = 0;
 		$transactions = array();
 		$formated_transactions = array();
@@ -80,6 +85,7 @@ class Mint extends CI_Controller {
 				);
 			endforeach;
 		endforeach;
+		$this->Insert_model->insert_categories($categories);
 	}
 }
 

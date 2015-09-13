@@ -80,7 +80,6 @@ class PhpMintApi {
 
 		$response = curl_exec($ch);
 		$curlError = curl_error($ch);
-
 		curl_close($ch);
 		unset($ch);
 
